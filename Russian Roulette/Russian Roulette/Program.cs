@@ -1,89 +1,302 @@
 ﻿using System;
 using System.Threading;
-using System.Diagnostics;
-using WMPLib;
-using System.Text;
-using System.Windows.Forms;
 
 namespace RussianRoulette
 {
     class Program
     {
-        public static Random random = new Random(); 
-        static void Main(string[] cmdLineArgs)
+        public static Random random = new Random();
+
+        static void Main()
         {
-            if (cmdLineArgs.Length != 0)
-            {
-                Console.WriteLine("ARGS: {0}", cmdLineArgs);
-            }
-
-            // INIT //
-
+            Console.Clear();
             Console.CursorVisible = false;
 
-            TitleTextCrawl("Russian Roulette", 150);
-            TextCrawl("Loading...", 50, false);
+            TitleTextCrawl("Russian Roulette");
 
-            Console.OutputEncoding = Encoding.Unicode;
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Thread.Sleep(random.Next(1000, 3000));  // just for suspense
-            Console.WriteLine("     DONE");
+            TextCrawl("Welcome to Russian Roulette.");
             Thread.Sleep(1000);
 
+            TextCrawl("The rules are simple. Each turn, you can choose to shoot yourself or your opponent.");
+            Thread.Sleep(1000);
 
-            //
+            TextCrawl("If you shoot your opponent and it doesn't fire, you have to shoot yourself.");
+            Thread.Sleep(1000);
+
+            TextCrawl("Once per game, you can respin the chamber and reset the bullet position.");
+            Thread.Sleep(1000);
+
+            TextCrawl("Good luck.");
+            Thread.Sleep(3000);
 
 
-            Menu();
+
+            // These variables keep track of the position of the bullet's chamber and the current chamber.
+            int Chamber = 1;
+            int BulletChamber = random.Next(1, 7);
+
+            //Console.WriteLine("DEBUG: Chamber = {0}, BulletChamber = {1}", Chamber, BulletChamber);
+            //Console.ReadKey(true);
 
 
-            
-            string Player2Name, Player1Name = SystemInformation.UserName;
+            bool RespinUsed = false;    
+            bool GameOver = false;
+            int Round = 1;
+            string turn = "player";
 
-            TextCrawl("Is " + Player1Name + " your name? (y/n) >>>");
-            var key = Console.ReadKey(true);
-
-            switch(key.Key.ToString().ToLower())
+            while (!GameOver)
             {
-                case "y":
-                    TextCrawl("\nYep. Don't ask how I got it.");
-                    Thread.Sleep(1000);
-                    TextCrawl("\nEnter Player 2's name >>> ", 50, false);
-                    Player2Name = Console.ReadLine();
-                    TextCrawl("Game starting...");
+
+                if (turn == "player")
+                {
+                    Console.Clear();
+                    Console.WriteLine("ROUND " + Round);
+
+                    TextCrawl("A - Shoot yourself || B - Shoot opponent ", 25, false);
+
+                    if (!RespinUsed)
+                    {
+                        TextCrawl("|| C - Respin chamber ", 25, false);
+                    }
+
+                    TextCrawl("~~>>> ", 25, false);
+
+
+                    string Choice = Console.ReadLine().ToLower();
+
+                    if (Choice == "a")
+                    {
+                        if (Chamber != BulletChamber)
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Thread.Sleep(100);
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Clear();
+
+                            Console.Write("CLICK! ");
+                            Thread.Sleep(1000);
+                            TextCrawl("No bullet was fired.");
+                            Thread.Sleep(3000);
+
+                            Chamber++;
+                            Round++;
+                        }
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+                            Thread.Sleep(3000);
+                            Console.BackgroundColor = ConsoleColor.Black;   
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+                            TextCrawl("You are dead. You shot yourself on round " + Round + ".");
+                            Thread.Sleep(5000);
+
+                            GameOver = true;
+                        }
+                    }
+
+                    else if (Choice == "b")
+                    {
+                        if (Chamber != BulletChamber)
+                        {
+                            Console.Write("CLICK! ");
+                            Thread.Sleep(1000);
+                            TextCrawl("No bullet was fired - you must now shoot yourself.");
+                            Thread.Sleep(3000);
+
+                            Chamber++;
+
+                            if (Chamber != BulletChamber)
+                            {
+                                Console.BackgroundColor = ConsoleColor.Red;
+                                Console.Clear();
+                                Thread.Sleep(100);
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                Console.Clear();
+
+                                Console.Write("CLICK! ");
+                                Thread.Sleep(1000);
+                                TextCrawl("No bullet was fired.");
+                                Thread.Sleep(3000);
+
+                                Chamber++;
+                                Round++;
+                            }
+                            else
+                            {
+                                Console.BackgroundColor = ConsoleColor.Red;
+                                Console.Clear();
+                                Console.WriteLine("BANG!");
+                                Thread.Sleep(3000);
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                Console.Clear();
+                                Console.WriteLine("BANG!");
+                                TextCrawl("You are dead. You shot yourself on round " + Round + ".");
+                                Thread.Sleep(5000);
+
+                                GameOver = true;
+                            }
+                        } else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+                            Thread.Sleep(3000);
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+                            TextCrawl("Your opponent is dead. You shot them on round " + Round + ".");
+                            Thread.Sleep(5000);
+
+                            GameOver = true;
+                        }
+                    }
+
+                    else if (Choice == "c" && !RespinUsed)
+                    {
+                        Console.Clear();
+                        RespinUsed = true;
+
+                        TextCrawl("Respinning the chamber.");
+                        Thread.Sleep(1000);
+
+                        BulletChamber = random.Next(1, 7);
+                        Chamber = 1;
+                        TextCrawl("Bullet position has been randomized.");
+                        Thread.Sleep(3000);
+
+                        Round++;
+                    }
+                    else
+                    {
+                        TextCrawl("Invalid choice.");
+                        Thread.Sleep(3000);
+                    }
+
+                    turn = "computer";
+
+                }
+                else
+                {
+                    Console.WriteLine("ROUND " + Round);
+                    Console.WriteLine("Computer's turn.");
+                    int ComputerChoice = random.Next(1, 3);
                     Thread.Sleep(3000);
+                    Console.Clear();
 
-                    TextCrawl("player 1     " + Player1Name);
-                    TextCrawl("player 2     " + Player2Name);
+                    if (ComputerChoice == 1)
+                    {
+                        TextCrawl("Computer has chosen to shoot itself.");
+                        Thread.Sleep(2000);
+                        Console.Clear();
 
-                    break;
+                        if (Chamber != BulletChamber)
+                        {
+                            Console.Write("CLICK! ");
+                            Thread.Sleep(1000);
+                            TextCrawl("No bullet was fired.");
+                            Thread.Sleep(3000);
 
-                case "n":
+                            Chamber++;
+                            Round++;
+                        }
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+                            Thread.Sleep(3000);
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+                            TextCrawl("Your opponent is dead. They shot themselves on round " + Round + ".");
+                            Thread.Sleep(5000);
 
-                    TextCrawl("Enter your name >>> ", 50, false);
-                    Player1Name = Console.ReadLine();
-                    TextCrawl("\nEnter Player 2's name >>> ", 50, false);
-                    Player2Name = Console.ReadLine();
-                    TextCrawl("Game starting...");
-                    Thread.Sleep(3000);
+                            GameOver = true;
+                        }
 
-                    TextCrawl("player 1     " + Player1Name);
-                    TextCrawl("player 2     " + Player2Name);
+                    } else
+                    {
+                        TextCrawl("Computer has chosen to shoot you.");
+                        Thread.Sleep(2000);
 
-                    break;
+                        if (Chamber != BulletChamber)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Thread.Sleep(100);
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Clear();
 
-                default:
-                    break;
+                            Console.Write("CLICK! ");
+                            Thread.Sleep(1000);
+                            TextCrawl("No bullet was fired - They must now shoot themselves.");
+                            Thread.Sleep(3000);
+
+                            Chamber++;
+
+                            if (Chamber != BulletChamber)
+                            {
+                                Console.Write("CLICK! ");
+                                Thread.Sleep(1000);
+                                TextCrawl("No bullet was fired.");
+                                Thread.Sleep(3000);
+
+                                Chamber++;
+                                Round++;
+                            }
+                            else
+                            {
+                                Console.BackgroundColor = ConsoleColor.Red;
+                                Console.Clear();
+                                Console.WriteLine("BANG!");
+                                Thread.Sleep(3000);
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                Console.Clear();
+                                Console.WriteLine("BANG!");
+                                TextCrawl("Your opponent is dead. They shot themselves on round " + Round + ".");
+                                Thread.Sleep(5000);
+
+                                GameOver = true;
+                            }
+                        }
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+                            Thread.Sleep(3000);
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+                            TextCrawl("You are dead. Your opponent shot you on round " + Round + ".");
+                            Thread.Sleep(5000);
+
+                            GameOver = true;
+                        }
+                    }
+
+
+                    Round++;
+                    turn = "player";
+                }
             }
 
-            // ACTUAL GAME START //
+            TextCrawl("Play again? press Y or N", 50, false);
+            var PlayAgain = Console.ReadKey(true);
 
-
+            if (PlayAgain.Key == ConsoleKey.Y)
+            {
+                Main();
+            } else
+            {
+                Environment.Exit(0);
+            }
 
         }
-
-
-
 
 
         public static void TextCrawl(string str, int ms = 50, bool endl = true)
@@ -96,14 +309,14 @@ namespace RussianRoulette
                 Thread.Sleep(ms);
             }
 
-            if (endl) Console.WriteLine();  // new line if the endl parameter is true
+            if (endl) Console.WriteLine();
         }
 
 
-        public static void TitleTextCrawl(string str, int ms = 50)
+        public static void TitleTextCrawl(string str, int ms = 150)
         {
-            char[] chars = str.ToCharArray();
             string title = "";
+            char[] chars = str.ToCharArray();
 
             for (int i = 0; i < chars.Length; i++)
             {
@@ -112,148 +325,5 @@ namespace RussianRoulette
                 Thread.Sleep(ms);
             }
         }
-
-
-
-
-
-        public static void Menu()
-        {
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Sound.PlayLooping(@"C:\ls_sfx\TestMenu.wav");
-
-            TextCrawl(" START \n INSTRUCTIONS \n SETTINGS \n EXIT ");
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("-START-\n INSTRUCTIONS \n SETTINGS \n EXIT ");
-
-            string selected = "start";
-            bool BreakWhile = false;
-
-            while (!BreakWhile)
-            {
-                var key = Console.ReadKey(true);
-
-                switch (key.Key)
-                {
-                    case ConsoleKey.UpArrow:
-
-
-                        if (selected == "exit")
-                        {
-                            selected = "settings";
-                            Console.Clear();
-                            Console.WriteLine(" START \n INSTRUCTIONS\n-SETTINGS-\n EXIT ");
-
-                        }
-
-                        else if (selected == "settings")
-                        {
-                            selected = "instructions";
-                            Console.Clear();
-                            Console.WriteLine(" START \n-INSTRUCTIONS-\n SETTINGS \n EXIT ");
-                        }
-
-                        else if (selected == "instructions")
-                        {
-                            selected = "start";
-                            Console.Clear();
-                            Console.WriteLine("-START-\n INSTRUCTIONS \n SETTINGS \n EXIT ");
-
-                        }
-
-                        break;
-
-                    case ConsoleKey.DownArrow:
-
-                        if (selected == "start")
-                        {
-                            selected = "instructions";
-                            Console.Clear();
-                            Console.WriteLine(" START \n-INSTRUCTIONS-\n SETTINGS \n EXIT ");
-
-                        }
-
-                        else if (selected == "instructions")
-                        {
-                            selected = "settings";
-                            Console.Clear();
-                            Console.WriteLine(" START \n INSTRUCTIONS \n-SETTINGS-\n EXIT ");
-
-                        }
-
-                        else if (selected == "settings")
-                        {
-                            selected = "exit";
-                            Console.Clear();
-                            Console.WriteLine(" START \n INSTRUCTIONS \n SETTINGS \n-EXIT-");
-
-                        }
-
-                        break;
-
-                    case ConsoleKey.Enter:
-
-                        if (selected == "start") { BreakWhile = true; }
-
-                        else if (selected == "instructions") { Instructions(); }
-
-                        else if (selected == "settings") { Settings(); }
-
-                        else if (selected == "exit") { Environment.Exit(0); }
-
-                        else { Console.WriteLine("===DEBUG===\nselected was {0}", selected); }
-
-                        break;
-                }
-            }
-        }
-
-
-        public static void Instructions()
-        {
-            TextCrawl("Instructions placeholder");
-            Thread.Sleep(1000);
-            Menu();
-        }
-
-
-        public static void Settings()
-        {
-            TextCrawl("Settings placeholder");
-            Thread.Sleep(1000);
-            Menu();
-        }
-    }
-
-    public class Sound
-    {
-        public static WindowsMediaPlayer SndPlayer = new WindowsMediaPlayer();      
-
-        public static void Play(string file, int vol = 40)
-        {
-            SndPlayer.controls.stop();
-
-            SndPlayer.URL = file;
-            SndPlayer.settings.volume = vol;
-
-            SndPlayer.controls.play();
-        }
-
-
-        public static void PlayLooping(string file, int vol = 40)
-        {
-            SndPlayer.controls.stop();
-
-            SndPlayer.URL = file;
-            SndPlayer.settings.volume = vol;
-            SndPlayer.settings.setMode("loop", true);
-
-            SndPlayer.controls.play();
-        }
-
-
-        public static void Stop() => SndPlayer.controls.stop();
     }
 }

@@ -12,23 +12,23 @@ namespace RussianRoulette
             Console.Clear();
             Console.CursorVisible = false;
 
-            TitleTextCrawl("Russian Roulette");
 
-            TextCrawl("Welcome to Russian Roulette.");
-            Thread.Sleep(1000);
+                TitleTextCrawl("Russian Roulette");
 
-            TextCrawl("The rules are simple. Each turn, you can choose to shoot yourself or your opponent.");
-            Thread.Sleep(1000);
+                TextCrawl("Welcome to Russian Roulette.");
+                Thread.Sleep(1000);
 
-            TextCrawl("If you shoot your opponent and it doesn't fire, you have to shoot yourself.");
-            Thread.Sleep(1000);
+                TextCrawl("The rules are simple. Each turn, you can choose to shoot yourself or your opponent.");
+                Thread.Sleep(1000);
 
-            TextCrawl("Once per game, you can respin the chamber and reset the bullet position.");
-            Thread.Sleep(1000);
+                TextCrawl("If you shoot your opponent and it doesn't fire, you have to shoot yourself.");
+                Thread.Sleep(1000);
 
-            TextCrawl("Good luck.");
-            Thread.Sleep(3000);
+                TextCrawl("Once per game, you can respin the chamber and reset the bullet position.");
+                Thread.Sleep(1000);
 
+                TextCrawl("Good luck.");
+                Thread.Sleep(3000);
 
 
             // These variables keep track of the position of the bullet's chamber and the current chamber.
@@ -181,6 +181,7 @@ namespace RussianRoulette
                 }
                 else
                 {
+                    Console.Clear();
                     Console.WriteLine("ROUND " + Round);
                     Console.WriteLine("Computer's turn.");
                     int ComputerChoice = random.Next(1, 3);

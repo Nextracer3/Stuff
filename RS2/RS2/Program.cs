@@ -1,17 +1,31 @@
 ﻿using System;
 using System.Threading;
+using System.Media;
+using System.IO;
 
 namespace RussianRoulette2
 {
     class Program
     {
         public static Random rnd = new Random();
+        public static SoundPlayer Snd = new SoundPlayer();
 
         static void Main()
         {
-            Console.CursorVisible = false;
-            // Intro
+            string[] SoundIndex = { "Intense.wav", "Intense2.wav", "Intense3.wav" };
+            try    // Try catch as the sound location is only on my PC
+            {
+                Snd.SoundLocation = SoundIndex[rnd.Next(SoundIndex.Length)];
+                Snd.PlayLooping();
+            }
+            catch (IOException)
+            {
 
+            }
+
+            Console.CursorVisible = false;
+
+            // Intro
             Console.Clear();
             TitleTextCrawl("Russian Roulette");
             Thread.Sleep(1000);
@@ -97,7 +111,6 @@ namespace RussianRoulette2
                 Thread.Sleep(ms);
             }
         }
-
 
 
 

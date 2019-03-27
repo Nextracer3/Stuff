@@ -13,15 +13,8 @@ namespace RussianRoulette2
         static void Main()
         {
             string[] SoundIndex = { "Intense.wav", "Intense2.wav", "Intense3.wav" };
-            try    // Try catch as the sound location is only on my PC
-            {
-                Snd.SoundLocation = SoundIndex[rnd.Next(SoundIndex.Length)];
-                Snd.PlayLooping();
-            }
-            catch (IOException)
-            {
-
-            }
+            Snd.SoundLocation = SoundIndex[rnd.Next(SoundIndex.Length)];
+            Snd.PlayLooping();
 
             Console.CursorVisible = false;
 

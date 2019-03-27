@@ -505,6 +505,7 @@ namespace RussianRoulette2
                         else
                         {
                             Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Clear();
                             Console.WriteLine("BANG!");
                             Thread.Sleep(2000);
                             Console.BackgroundColor = ConsoleColor.Black;

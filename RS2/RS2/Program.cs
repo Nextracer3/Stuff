@@ -463,7 +463,7 @@ namespace RussianRoulette2
                             Thread.Sleep(2000);
                             Console.BackgroundColor = ConsoleColor.Black;
                             Console.Clear();
-                            TextCrawl(Player1Name + "is dead. They shot themselves on round " + Round + ".");
+                            TextCrawl(Player1Name + " is dead. They shot themselves on round " + Round + ".");
                             Thread.Sleep(3000);
                             GameOver = true;    
                         }

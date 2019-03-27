@@ -171,7 +171,7 @@ namespace RussianRoulette2
                             Console.Write("CLICK! ");
                             Thread.Sleep(1000);
                             TextCrawl("No bullet was fired - you must now shoot yourself...");
-                            Thread.Sleep(2000);
+                            Thread.Sleep(3000);
 
                             CurrentChamber++;
 
@@ -236,6 +236,7 @@ namespace RussianRoulette2
                         Thread.Sleep(2000);
 
                         Round++;
+                        RespinUsed = true;  
                         turn = "computer";
                     }
 
@@ -314,16 +315,17 @@ namespace RussianRoulette2
                             Console.Write("CLICK! ");
                             Thread.Sleep(1000);
                             TextCrawl("No bullet was fired - they must now shoot themselves...");
-                            Thread.Sleep(2000);
+                            Thread.Sleep(3000);
 
                             CurrentChamber++;
 
                             if (CurrentChamber != BulletChamber)
                             {
+                                Console.Clear();
                                 Console.Write("CLICK! ");
                                 Thread.Sleep(1000);
                                 TextCrawl("No bullet was fired.");
-                                Thread.Sleep(2000);
+                                Thread.Sleep(3000);
 
                                 CurrentChamber++;
                                 Round++;
@@ -369,14 +371,14 @@ namespace RussianRoulette2
 
             Console.Clear();
             TextCrawl("Would you like to play again?");
-            TextCrawl("1 -- Player vs Computer || 2 -- Player vs Player || 3 -- Exit");
-            TextCrawl("\nPress a key to make a selection.");
+            TextCrawl("1 -- Player vs Computer || 2 -- Player vs Player || 3 -- Exit ~~>>> ", 50, false);
 
-            var key = Console.ReadKey(true);
+            string PlayAgain = Console.ReadLine();
 
-            if (key.Key == ConsoleKey.D1) { PvC(); }
-            else if (key.Key == ConsoleKey.D2) { PvP(); }
-            else { Environment.Exit(0); }
+            if (PlayAgain == "1") { PvC(); }
+            if (PlayAgain == "2") { PvP(); }
+
+            Environment.Exit(0);
         }
 
 
@@ -417,35 +419,125 @@ namespace RussianRoulette2
                 if (turn == "player1")
                 {
                     Console.Clear();
-                    Console.WriteLine("ROUND {0} -- {1}'s TURN", Round, Player2Name);
+                    Console.WriteLine("ROUND {0} -- {1}'S TURN", Round, Player1Name.ToUpper());
                     Thread.Sleep(1000);
 
                     TextCrawl("A -- Shoot yourself || B -- Shoot opponent ", 25, false);
                     if (!P1RespinUsed) { TextCrawl("|| C -- Respin cylinder ", 25, false); }
                     TextCrawl("~~>>> ", 25, false);
 
-                    string PlayerChoice = Console.ReadLine();
+                    string Player1Choice = Console.ReadLine();
+                    Console.Clear();
 
-                    if (PlayerChoice.ToLower() == "a")
+                    if (Player1Choice.ToLower() == "a")
                     {
+                        if (CurrentChamber != BulletChamber)
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Thread.Sleep(100);
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Clear();
 
+                            Console.Write("CLICK! ");
+                            Thread.Sleep(1000);
+                            TextCrawl("No bullet was fired.");
+                            Thread.Sleep(3000);
+
+                            CurrentChamber++;
+                            Round++;
+                            turn = "player2";
+                        }
+
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+                            Thread.Sleep(2000);
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Write("{0} is dead. They shot themselves on round {1}", Player1Name, Round);
+                            Thread.Sleep(3000);
+                            GameOver = true;    
+                        }
                     }
 
-                    else if (PlayerChoice.ToLower() == "b")
+                    else if (Player1Choice.ToLower() == "b")
                     {
+                        if (CurrentChamber != BulletChamber)
+                        {
+                            Console.Write("CLICK! ");
+                            Thread.Sleep(1000);
+                            TextCrawl("No bullet was fired - you must now shoot yourself...");
+                            Thread.Sleep(3000);
 
+                            if (CurrentChamber != BulletChamber)
+                            {
+                                Console.BackgroundColor = ConsoleColor.Red;
+                                Console.Clear();
+                                Thread.Sleep(100);
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                Console.Clear();
+
+                                Console.Write("CLICK! ");
+                                Thread.Sleep(1000);
+                                TextCrawl("No bullet was fired.");
+                                Thread.Sleep(3000);
+
+                                CurrentChamber++;
+                                Round++;
+                                turn = "player2";
+                            }
+
+                            else
+                            {
+                                Console.BackgroundColor = ConsoleColor.Red;
+                                Console.Clear();
+                                Console.WriteLine("BANG!");
+                                Thread.Sleep(2000);
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                Console.Write("{0} is dead. They shot themselves on round {1}", Player1Name, Round);
+                                Thread.Sleep(3000);
+                                GameOver = true;
+                            }
+                        }
+
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.WriteLine("BANG!");
+                            Thread.Sleep(2000);
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+
+                            TextCrawl(Player2Name + " is dead. They were shot by " + Player1Name + " on round " + Round + ".");
+                            Thread.Sleep(3000);
+                            GameOver = true;
+                        }
                     }
 
-                    else if (PlayerChoice.ToLower() == "c" && !P1RespinUsed)
+                    else if (Player1Choice.ToLower() == "c" && !P1RespinUsed)
                     {
+                        TextCrawl("Respinning the cylinder.");
+                        Thread.Sleep(1000);
 
+                        BulletChamber = rnd.Next(1, 7);
+                        CurrentChamber = 1;
+                        P1RespinUsed = true;
+
+                        TextCrawl("Cylinder has been randomized.");
+                        Thread.Sleep(2000);
+
+                        Round++;
+                        turn = "player2";
                     }
 
                     else
                     {
-                        Console.Clear();
                         TextCrawl("Invalid selection.");
                         Thread.Sleep(2000);
+                        Round++;
                         turn = "player2";
                     }
                 }
@@ -453,14 +545,146 @@ namespace RussianRoulette2
                 // Player 2 turn
                 else
                 {
+                    Console.Clear();
+                    Console.WriteLine("ROUND {0} -- {1}'S TURN", Round, Player2Name.ToUpper());
+                    Thread.Sleep(1000);
 
+                    TextCrawl("A -- Shoot yourself || B -- Shoot opponent ", 25, false);
+                    if (!P2RespinUsed) { TextCrawl("|| C -- Respin cylinder ", 25, false); }
+                    TextCrawl("~~>>> ", 25, false);
+
+                    string Player2Choice = Console.ReadLine();
+                    Console.Clear();
+
+                    if (Player2Choice.ToLower() == "a")
+                    {
+                        if (CurrentChamber != BulletChamber)
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Thread.Sleep(100);
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Clear();
+
+                            Console.Write("CLICK! ");
+                            Thread.Sleep(1000);
+                            TextCrawl("No bullet was fired.");
+                            Thread.Sleep(3000);
+
+                            CurrentChamber++;
+                            Round++;
+                            turn = "player1";
+                        }
+
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+                            Thread.Sleep(2000);
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Write("{0} is dead. They shot themselves on round {1}", Player2Name, Round);
+                            Thread.Sleep(3000);
+                            GameOver = true;
+                        }
+                    }
+
+                    else if (Player2Choice.ToLower() == "b")
+                    {
+                        if (CurrentChamber != BulletChamber)
+                        {
+                            Console.Write("CLICK! ");
+                            Thread.Sleep(1000);
+                            TextCrawl("No bullet was fired - you must now shoot yourself...");
+                            Thread.Sleep(3000);
+
+                            if (CurrentChamber != BulletChamber)
+                            {
+                                Console.BackgroundColor = ConsoleColor.Red;
+                                Console.Clear();
+                                Thread.Sleep(100);
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                Console.Clear();
+
+                                Console.Write("CLICK! ");
+                                Thread.Sleep(1000);
+                                TextCrawl("No bullet was fired.");
+                                Thread.Sleep(3000);
+
+                                CurrentChamber++;
+                                Round++;
+                                turn = "player1";
+                            }
+
+                            else
+                            {
+                                Console.BackgroundColor = ConsoleColor.Red;
+                                Console.Clear();
+                                Console.WriteLine("BANG!");
+                                Thread.Sleep(2000);
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                Console.Write("{0} is dead. They shot themselves on round {1}", Player2Name, Round);
+                                Thread.Sleep(3000);
+                                GameOver = true;
+                            }
+                        }
+
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+                            Thread.Sleep(2000);
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.Clear();
+                            Console.WriteLine("BANG!");
+
+                            TextCrawl(Player1Name + " is dead. They were shot by " + Player2Name + " on round " + Round + ".");
+                            Thread.Sleep(3000);
+                            GameOver = true;
+                        }
+                    }
+
+                    else if (Player2Choice.ToLower() == "c" && !P2RespinUsed)
+                    {
+                        TextCrawl("Respinning the cylinder.");
+                        Thread.Sleep(1000);
+
+                        BulletChamber = rnd.Next(1, 7);
+                        CurrentChamber = 1;
+                        P2RespinUsed = true;
+
+                        TextCrawl("Cylinder has been randomized.");
+                        Thread.Sleep(2000);
+
+                        Round++;
+                        turn = "player1";
+                    }
+
+                    else
+                    {
+                        TextCrawl("Invalid selection.");
+                        Thread.Sleep(2000);
+
+                        Round++;
+                        turn = "player1";
+                    }
                 }
             }
 
 
             // Game Over
 
+            Console.Clear();
+            TextCrawl("Would you like to play again?");
+            TextCrawl("1 -- Player vs Computer || 2 -- Player vs Player || 3 -- Exit ~~>>> ", 50, false);
 
+            string PlayAgain = Console.ReadLine();
+
+            if (PlayAgain == "1") { PvC(); }
+            if (PlayAgain == "2") { PvP(); }
+
+            Environment.Exit(0);
         }
     }
 }

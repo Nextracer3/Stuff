@@ -145,6 +145,7 @@ namespace RussianRoulette2
                             Thread.Sleep(3000);
 
                             CurrentChamber++;
+                            Round++;
                             turn = "computer";
                         } 
                         else
@@ -188,6 +189,7 @@ namespace RussianRoulette2
                                 Thread.Sleep(3000);
 
                                 CurrentChamber++;
+                                Round++;
                                 turn = "computer";
                             }
 
@@ -233,6 +235,7 @@ namespace RussianRoulette2
                         TextCrawl("Cylinder has been randomized.");
                         Thread.Sleep(2000);
 
+                        Round++;
                         turn = "computer";
                     }
 
@@ -241,10 +244,9 @@ namespace RussianRoulette2
                         TextCrawl("Invalid selection.");
                         Thread.Sleep(2000);
 
+                        Round++;
                         turn = "computer";
                     }
-
-                    Round++;
                 }
 
                 // Computer turn
@@ -274,6 +276,7 @@ namespace RussianRoulette2
                             Thread.Sleep(2000);
 
                             CurrentChamber++;
+                            Round++;
                             turn = "player";
                         }
 
@@ -323,6 +326,7 @@ namespace RussianRoulette2
                                 Thread.Sleep(2000);
 
                                 CurrentChamber++;
+                                Round++;
                                 turn = "player";
                             }
 
@@ -358,8 +362,6 @@ namespace RussianRoulette2
                         }
                     }
                 }
-
-                Round ++;
             }
 
 
@@ -419,7 +421,33 @@ namespace RussianRoulette2
                     Thread.Sleep(1000);
 
                     TextCrawl("A -- Shoot yourself || B -- Shoot opponent ", 25, false);
-                    if (!P1RespinUsed) { TextCrawl("|| C -- Respin cylinder", 25, false); }
+                    if (!P1RespinUsed) { TextCrawl("|| C -- Respin cylinder ", 25, false); }
+                    TextCrawl("~~>>> ", 25, false);
+
+                    string PlayerChoice = Console.ReadLine();
+
+                    if (PlayerChoice.ToLower() == "a")
+                    {
+
+                    }
+
+                    else if (PlayerChoice.ToLower() == "b")
+                    {
+
+                    }
+
+                    else if (PlayerChoice.ToLower() == "c" && !P1RespinUsed)
+                    {
+
+                    }
+
+                    else
+                    {
+                        Console.Clear();
+                        TextCrawl("Invalid selection.");
+                        Thread.Sleep(2000);
+                        turn = "player2";
+                    }
                 }
 
                 // Player 2 turn

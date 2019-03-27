@@ -668,7 +668,7 @@ namespace RussianRoulette2
                         Thread.Sleep(2000);
 
                         Round++;
-                        turn = "player1";
+                        turn = "player1"; 
                     }
                 }
             }

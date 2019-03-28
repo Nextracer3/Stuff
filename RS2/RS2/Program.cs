@@ -90,7 +90,7 @@ namespace RussianRoulette2
 
         // It may seem like this function is useless and obsolete
         // And that would be correct
-        // But for some reason it breaks the whole program if it is removed
+        // But for some reason it breaks the whole program if it is removed, and idk why
         // So it is here to stay
         public static void TitleTextCrawl(string str, int ms = 150)
         {

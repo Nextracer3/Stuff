@@ -12,8 +12,8 @@ namespace RussianRoulette2
 
         static void Main()
         {
-            string[] SoundIndex = { "Intense.wav", "Intense2.wav", "Intense3.wav" };
-            Snd.SoundLocation = SoundIndex[rnd.Next(SoundIndex.Length)];
+            string[] SoundIndex = { "Intense.wav", "Intense2.wav", "Intense3.wav", "Intense4.wav" };
+            Snd.SoundLocation = SoundIndex[rnd.Next(SoundIndex.Length)];    // Pick and play a random song
             Snd.PlayLooping();
 
             Console.CursorVisible = false;

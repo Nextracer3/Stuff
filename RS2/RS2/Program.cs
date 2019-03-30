@@ -591,7 +591,9 @@ namespace RussianRoulette2
                             Console.WriteLine("BANG!");
                             Thread.Sleep(2000);
                             Console.BackgroundColor = ConsoleColor.Black;
-                            Console.Write("{0} is dead. They shot themselves on round {1}", Player2Name, Round);
+                            Console.Clear();
+
+                            TextCrawl(Player2Name + "is dead. They shot themselves on round " + Round + ".");
                             Thread.Sleep(3000);
                             GameOver = true;
                         }

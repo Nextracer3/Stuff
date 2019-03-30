@@ -1,15 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Threading;
+using System.Media;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RPG
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] cmdLineArgs)
         {
+            if (cmdLineArgs.Length > 0) { Console.WriteLine("ARGS: {0}", cmdLineArgs); }
+
+
         }
     }
 }

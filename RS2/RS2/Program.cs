@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Media;
 using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace RussianRoulette2
 {
@@ -16,6 +18,7 @@ namespace RussianRoulette2
             Snd.SoundLocation = SoundIndex[rnd.Next(SoundIndex.Length)];    // Pick and play a random song
             Snd.PlayLooping();
 
+            Console.ForegroundColor = ConsoleColor.White;
             Console.CursorVisible = false;
 
             // Intro
@@ -51,7 +54,7 @@ namespace RussianRoulette2
             while (true)
             {
                 Console.Clear();
-                TextCrawl("1 -- Player vs Computer || 2 -- Player vs Player ~~>>> ", 50, false);
+                TextCrawl("1 -- Player vs Computer || 2 -- Player vs Player || 3 -- Player vs Player vs Player ~~>>> ", 50, false);
                 string Choice = Console.ReadLine();
 
 
@@ -63,6 +66,11 @@ namespace RussianRoulette2
                 else if (Choice == "2")
                 {
                     PvP();
+                }
+
+                else if (Choice == "3")
+                {
+                    PvPvP();
                 }
 
                 else
@@ -176,7 +184,10 @@ namespace RussianRoulette2
                         {
                             Console.Write("CLICK! ");
                             Thread.Sleep(1000);
-                            TextCrawl("No bullet was fired - you must now shoot yourself...");
+                            TextCrawl("No bullet was fired - ", 25, false);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            TextCrawl("you must now shoot yourself...");
+                            Console.ForegroundColor = ConsoleColor.White;
                             Thread.Sleep(3000);
 
                             CurrentChamber++;
@@ -475,7 +486,10 @@ namespace RussianRoulette2
                         {
                             Console.Write("CLICK! ");
                             Thread.Sleep(1000);
-                            TextCrawl("No bullet was fired - you must now shoot yourself...");
+                            TextCrawl("No bullet was fired - ", 25, false);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            TextCrawl("you must now shoot yourself...");
+                            Console.ForegroundColor = ConsoleColor.White;
                             Thread.Sleep(3000);
 
                             if (CurrentChamber != BulletChamber)
@@ -592,6 +606,7 @@ namespace RussianRoulette2
                             Thread.Sleep(2000);
                             Console.BackgroundColor = ConsoleColor.Black;
                             Console.Clear();
+                            Console.WriteLine("BANG!");
 
                             TextCrawl(Player2Name + "is dead. They shot themselves on round " + Round + ".");
                             Thread.Sleep(3000);
@@ -605,7 +620,10 @@ namespace RussianRoulette2
                         {
                             Console.Write("CLICK! ");
                             Thread.Sleep(1000);
-                            TextCrawl("No bullet was fired - you must now shoot yourself...");
+                            TextCrawl("No bullet was fired - ", 25, false);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            TextCrawl("you must now shoot yourself...");
+                            Console.ForegroundColor = ConsoleColor.White;
                             Thread.Sleep(3000);
 
                             if (CurrentChamber != BulletChamber)
@@ -695,6 +713,18 @@ namespace RussianRoulette2
             if (PlayAgain == "2") { PvP(); }
 
             Environment.Exit(0);
+        }
+
+
+
+
+
+        public static void PvPvP()
+        {
+            Console.Clear();
+            TextCrawl("3 Player is not made yet.");
+            Thread.Sleep(3000);
+            Console.Clear();
         }
     }
 }

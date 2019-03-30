@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Media;
 using System.Linq;
+using System.Diagnostics;
 
 namespace RPG
 {
@@ -9,11 +10,101 @@ namespace RPG
     {
         static void Main(string[] cmdLineArgs)
         {
+            SetCol(ConsoleColor.Blue);
             TitleTextCrawl("Super epic RPG (tm)");
             TextCrawl("(c) 2019 Harry Waddle, all rights reserved\n");
 
             if (cmdLineArgs.Length > 0) { Console.WriteLine("ARGS: {0}", cmdLineArgs); }
 
+            Thread.Sleep(3000);
+
+            Menu();
+
+            TextCrawl("START");
+        }
+
+
+        public static void Menu()
+        {
+            Console.Clear();
+            SetCol(ConsoleColor.Blue);
+            TextCrawl(" START \n GITHUB PAGE \n EXIT ");
+            Console.Clear();
+            SetCol(ConsoleColor.Cyan);
+
+            string selected = "start";
+            bool BreakWhile = false;
+
+            Console.WriteLine("-START-\n GITHUB PAGE \n EXIT ");
+
+            while (!BreakWhile)
+            {
+                var input = Console.ReadKey(true);
+
+                switch (input.Key)
+                {
+                    case ConsoleKey.UpArrow:
+
+                        if (selected != "start")
+                        {
+                            if (selected == "github")
+                            {
+                                selected = "start";
+                                Console.Clear();
+                                Console.WriteLine("-START-\n GITHUB PAGE \n EXIT ");
+                            }
+
+                            else if (selected == "exit")
+                            {
+                                selected = "github";
+                                Console.Clear();
+                                Console.WriteLine(" START \n-GITHUB PAGE-\n EXIT ");
+                            }
+                        }
+
+                        break;
+
+                    case ConsoleKey.DownArrow:
+
+                        if (selected != "exit")
+                        {
+                            if (selected == "start")
+                            {
+                                selected = "github";
+                                Console.Clear();
+                                Console.WriteLine(" START \n-GITHUB PAGE-\n EXIT ");
+                            }
+
+                            else if (selected == "github")
+                            {
+                                selected = "exit";
+                                Console.Clear();
+                                Console.WriteLine(" START \n GITHUB PAGE \n-EXIT-");
+                            }
+                        }
+
+                        break;
+
+                    case ConsoleKey.Enter:
+
+                        if (selected == "start") { BreakWhile = true; }
+
+                        else if (selected == "github")
+                        {
+                            Process.Start("Chrome.exe", "https://www.github.com/Nextracer3/stuff");
+                            Menu();
+                        }
+
+                        else { Environment.Exit(0); }
+
+                        break;
+                }
+            }
+        }
+
+        
+        public static void Prologue()
+        {
 
         }
 

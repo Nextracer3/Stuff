@@ -9,6 +9,9 @@ namespace RPG
     {
         static void Main(string[] cmdLineArgs)
         {
+            TitleTextCrawl("Super epic RPG (tm)");
+            TextCrawl("(c) 2019 Harry Waddle, all rights reserved\n");
+
             if (cmdLineArgs.Length > 0) { Console.WriteLine("ARGS: {0}", cmdLineArgs); }
 
 
@@ -54,6 +57,33 @@ namespace RPG
                 Console.BackgroundColor = colour;
             }
         }
-        
+    }
+
+    public class Sounds
+    {
+        public static SoundPlayer SndPlayer = new SoundPlayer();
+
+        public static void Play(string file)
+        {
+            SndPlayer.SoundLocation = file;
+            SndPlayer.Play();
+        }
+
+        public static void PlayLooping(string file)
+        {
+            SndPlayer.SoundLocation = file;
+            SndPlayer.PlayLooping();
+        }
+
+        public static void PlaySync(string file)
+        {
+            SndPlayer.SoundLocation = file;
+            SndPlayer.PlaySync();
+        }
+
+        public static void Stop()
+        {
+            SndPlayer.Stop();
+        }
     }
 }

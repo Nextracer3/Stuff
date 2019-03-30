@@ -3,15 +3,20 @@ using System.Threading;
 using System.Media;
 using System.Linq;
 using System.Diagnostics;
+using WMPLib;
 
 namespace RPG
 {
     class Program
     {
+        
         static void Main(string[] cmdLineArgs)
         {
+            Console.CursorVisible = false;
+
             SetCol(ConsoleColor.Blue);
             TitleTextCrawl("Super epic RPG (tm)");
+            Sounds.PlayLooping("Despacito.wav");
             TextCrawl("(c) 2019 Harry Waddle, all rights reserved\n");
 
             if (cmdLineArgs.Length > 0) { Console.WriteLine("ARGS: {0}", cmdLineArgs); }
@@ -20,7 +25,7 @@ namespace RPG
 
             Menu();
 
-            TextCrawl("START");
+            Prologue();
         }
 
 
@@ -92,7 +97,6 @@ namespace RPG
                         else if (selected == "github")
                         {
                             Process.Start("Chrome.exe", "https://www.github.com/Nextracer3/stuff");
-                            Menu();
                         }
 
                         else { Environment.Exit(0); }
@@ -105,6 +109,8 @@ namespace RPG
         
         public static void Prologue()
         {
+            Sounds.Stop();
+
 
         }
 
@@ -152,29 +158,26 @@ namespace RPG
 
     public class Sounds
     {
-        public static SoundPlayer SndPlayer = new SoundPlayer();
+        public static WindowsMediaPlayer SndPlayer = new WindowsMediaPlayer();
 
-        public static void Play(string file)
+        public static void Play(string file, int vol = 40)
         {
-            SndPlayer.SoundLocation = file;
-            SndPlayer.Play();
+            SndPlayer.URL = file;
+            SndPlayer.settings.volume = vol;
+            SndPlayer.controls.play();
         }
 
-        public static void PlayLooping(string file)
+        public static void PlayLooping(string file, int vol = 40)
         {
-            SndPlayer.SoundLocation = file;
-            SndPlayer.PlayLooping();
-        }
-
-        public static void PlaySync(string file)
-        {
-            SndPlayer.SoundLocation = file;
-            SndPlayer.PlaySync();
+            SndPlayer.URL = file;
+            SndPlayer.settings.volume = vol;
+            SndPlayer.settings.setMode("loop", true);
+            SndPlayer.controls.play();
         }
 
         public static void Stop()
         {
-            SndPlayer.Stop();
+            SndPlayer.controls.stop();
         }
     }
 }

@@ -14,11 +14,12 @@ namespace RPG
         {
             Console.CursorVisible = false;
 
+
             SetCol(ConsoleColor.Blue);
             TitleTextCrawl("Super epic RPG (tm)");
             Sounds.PlayLooping("Despacito.wav");
             TextCrawl("(c) 2019 Harry Waddle, all rights reserved\n");
-            TextCrawl("Some flashing lights, so cover your eyes I guess");
+            TextCrawl("Some very mild flashing lights, so cover your eyes if you want");
 
             if (cmdLineArgs.Length > 0) { Console.WriteLine("ARGS: {0}", cmdLineArgs); }
 
@@ -147,7 +148,7 @@ namespace RPG
             AwaitKey();
             TextCrawl("\nYOU: yea m8?");
             AwaitKey();
-            TextCrawl("MUM: Can you pick up that can over there? I'll give you a chocolate bar if you do.");
+            TextCrawl("MUM: Can you pick up that can over there?");
             AwaitKey();
             TextCrawl("YOU: no");
             AwaitKey();
@@ -218,16 +219,26 @@ namespace RPG
             AwaitKey();
             TextCrawl("EMPLOYEE: BOI WHAT?");
             AwaitKey();
-            TextCrawl("EMPLOYEE: *into mic* GET ME SECURITY GUY STEVE IN THE FOOD ISLE! THIS HECKIN HECK THINKS HE CAN JUST SHAMELESSLY TAKE ME HECKIN SOUP!");
+            TextCrawl("EMPLOYEE: *into mic* GET ME SECURITY GUY STEVE IN THE FOOD ISLE! WE HAVE A SOUP THEIF!");
             AwaitKey();
             TextCrawl("MUM: " + Name + ", Take the employee. I have Steve.");
             AwaitKey();
 
-            Encounter("Employee", Name, 30, 100, true, true);    
+            Encounter("Employee", Name, 30, 100, true, true);
+
+            Sounds.Play("Detected.flac", 60);
+            TextCrawl("MUM: " + Name.ToUpper() + "! HELP!");
+            AwaitKey();
+            TextCrawl("You rush to help your mum against Security Guy Steve.");
+            AwaitKey();
+
+            Encounter("Security guy Steve", Name, 69420, 100, true, false, "Steve 1");
+
+            TextCrawl("despacito");
         }
 
 
-        public static void Encounter(string EnemyName, string PlayerName, int EnemyHealth, int PlayerHealth, bool FirstStrike, bool Tutorial)  // Encounter system
+        public static void Encounter(string EnemyName, string PlayerName, int EnemyHealth, int PlayerHealth, bool FirstStrike, bool Tutorial, string Boss = "None")  // Encounter system
         {
             Sounds.PlayLooping("Encounter.wav");
             Sounds.SndPlayer.controls.currentPosition = 0.5;
@@ -248,10 +259,16 @@ namespace RPG
 
             int DmgMod = 0;
             int HpMod = 0;
+            int PlayerLastStandChance = 50;
+            int EnemyLastStandChance = 30;
+            int PlayerCritChance = 10;
+            int EnemyCritChance = 10;
 
-
-            SetCol(ConsoleColor.Red);
-            TextCrawl("A WILD " + EnemyName.ToUpper() + " APPEARED!");
+            if (Boss == "None")
+            {
+                SetCol(ConsoleColor.Red);
+                TextCrawl("A WILD " + EnemyName.ToUpper() + " APPEARED!");
+            }
 
             string turn = "enemy";
 
@@ -272,16 +289,21 @@ namespace RPG
                 TextCrawl("This means you get the first turn and have an attack bonus for the first turn.");
                 Thread.Sleep(3000);
 
+                SetCol(ConsoleColor.Red);
+                TextCrawl("YOUR TURN");
+                Thread.Sleep(1000);
+
                 while (true)
                 {
                     Console.Clear();
+                    SetCol(ConsoleColor.Green);
                     TextCrawl("It is your turn. Take advantage of your first strike and attack the enemy!");
                     TextCrawl("Attack by typing 'attack'.");
 
                     SetCol(ConsoleColor.Red);
                     Console.WriteLine("\n{0}'s HEALTH: {1}\nYOUR HEALTH: {2}\n\n", EnemyName, EnemyHealth, PlayerHealth);
                     SetCol(ConsoleColor.DarkYellow);
-                    TextCrawl("~~>>>", 50, false);
+                    TextCrawl("~~>>> ", 50, false);
                     SetCol(ConsoleColor.Red);
 
                     string action = Console.ReadLine();
@@ -322,11 +344,373 @@ namespace RPG
                         Console.Clear();
 
                         TextCrawl("Employee was hit for 15 damage!");
+                        EnemyHealth -= 15;
+                        Thread.Sleep(3000);
                         break;
                     }
                 }
 
-                TextCrawl("\n\n\nWould be other stuff");
+                Console.Clear();
+                TextCrawl(EnemyName.ToUpper() + "'S TURN");
+                Thread.Sleep(3000);
+
+                TextCrawl(EnemyName.ToUpper() + " USES VIGOUR OF MOTIVATION! +10 LAST STAND CHANCE");
+                SetCol(ConsoleColor.Green);
+                TextCrawl("They just used an item that increases their chance of getting last stand.");
+                Thread.Sleep(1000);
+                TextCrawl("Let's use an item to increase our crit chance - use the vigour of luck by typing 'use' and then selecting it.");
+                Thread.Sleep(3000);
+
+                SetCol(ConsoleColor.Red);
+                TextCrawl("YOUR TURN");
+                Thread.Sleep(1000);
+
+                while (true)
+                {
+                    Console.Clear();
+                    SetCol(ConsoleColor.Red);
+                    Console.WriteLine("\n{0}'s HEALTH: {1}\nYOUR HEALTH: {2}\n\n", EnemyName, EnemyHealth, PlayerHealth);
+                    SetCol(ConsoleColor.DarkYellow);
+                    TextCrawl("~~>>> ", 50, false);
+                    SetCol(ConsoleColor.Red);
+
+                    string action = Console.ReadLine();
+
+                    if (action.ToLower() != "use")
+                    {
+                        SetCol(ConsoleColor.Green);
+                        TextCrawl("Try again -- see your items list by typing 'use'.");
+                        Thread.Sleep(3000);
+                        Console.Clear();
+                    }
+
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("1 - Second Wind");
+                        Console.WriteLine("2 - Vigour of Luck");
+                        Console.WriteLine("3 - Heckin soup");
+
+                        SetCol(ConsoleColor.DarkYellow);
+                        TextCrawl("\n~~>>> ", 50, false);
+                        SetCol(ConsoleColor.Red);
+
+                        string choice = Console.ReadLine();
+
+                        if (choice != "2")
+                        {
+                            SetCol(ConsoleColor.Green);
+                            TextCrawl("\nNope. Use the vigour of luck.");
+                            Thread.Sleep(1000);
+                            SetCol(ConsoleColor.Red);
+                        }
+
+                        else
+                        {
+                            TextCrawl(PlayerName.ToUpper() + " USES THE VIGOUR OF LUCK! +10 CRIT CHANCE!");
+                            Thread.Sleep(3000);
+                            break;
+                        }
+                    }
+                }
+
+                Console.Clear();
+                Console.WriteLine("{0} ATTACKS!", EnemyName.ToUpper());
+                Thread.Sleep(2000);
+
+                Console.Clear();
+                Console.WriteLine("10 DAMAGE");
+                Thread.Sleep(1000);
+                Console.Clear();
+                Console.WriteLine("10 DAMAGE + 0");
+                Thread.Sleep(1000);
+                Console.Clear();
+                Console.WriteLine("10 DAMAGE");
+                Thread.Sleep(3000);
+
+                SetCol(ConsoleColor.Red, "back");
+                Console.Clear();
+                Thread.Sleep(100);
+                SetCol(ConsoleColor.Black, "back");
+                Console.Clear();
+
+                TextCrawl("You were hit for 10 damage!");
+                PlayerHealth -= 10;
+                Thread.Sleep(2000);
+
+                Console.Clear();
+                TextCrawl("YOUR TURN");
+                Thread.Sleep(1000);
+                Console.Clear();
+
+                SetCol(ConsoleColor.Green);
+                TextCrawl("Let's put that vigour to use. Attack the enemy.");
+                SetCol(ConsoleColor.Red);
+                Thread.Sleep(3000);
+
+                while (true)
+                {
+                    Console.Clear();
+                    Console.WriteLine("{0}'S HEALTH: {1}\nYOUR HEALTH: {2}\n\n", EnemyName, EnemyHealth, PlayerHealth);
+                    SetCol(ConsoleColor.DarkYellow);
+                    TextCrawl("~~>>> ", 50, false);
+                    SetCol(ConsoleColor.Red);
+
+                    string action = Console.ReadLine();
+
+                    if (action.ToLower() != "attack")
+                    {
+                        SetCol(ConsoleColor.Green);
+                        TextCrawl("Nope. Attack the enemy.");
+                        Thread.Sleep(3000);
+                        SetCol(ConsoleColor.Red);
+                    }
+
+                    else
+                    {
+                        Console.Clear();
+
+                        Console.WriteLine("10 DAMAGE");
+                        Thread.Sleep(1000);
+                        Console.Clear();
+
+                        Console.WriteLine("10 DAMAGE + CRITICAL HIT");
+                        Thread.Sleep(1000);
+                        Console.Clear();
+
+                        Console.WriteLine("10 DAMAGE + 10");
+                        Thread.Sleep(1000);
+                        Console.Clear();
+
+                        Console.WriteLine("20 DAMAGE");
+                        Thread.Sleep(3000);
+
+                        SetCol(ConsoleColor.Red, "back");
+                        Console.Clear();
+                        Thread.Sleep(100);
+                        SetCol(ConsoleColor.Black, "back");
+                        Console.Clear();
+
+                        TextCrawl(EnemyName + " was hit for 20 damage!");
+                        EnemyHealth -= 20;
+                        Thread.Sleep(2000);
+                        TextCrawl("The wild " + EnemyName + " fainted.");
+                        Thread.Sleep(2000);
+                        SetCol(ConsoleColor.Green);
+                        TextCrawl("YOU WON! You got 10 Exp and 10 Gold.");
+                        Thread.Sleep(3000);
+                        Console.Clear();
+
+                        break;
+                    }
+                }
+
+                Sounds.FadeOut(40, 50);
+                return;
+            }
+
+            
+
+            else if (Boss == "Steve 1")     // 1st Steve fight
+            {
+                Sounds.FadeOut(40, 10);
+                Sounds.PlayLooping("Steve.wav");
+                Sounds.SndPlayer.controls.currentPosition = 14.4;
+                SetCol(ConsoleColor.Red);
+
+                TextCrawl("SECURITY GUY STEVE TOWERS OVER YOU.");
+                Thread.Sleep(1000);
+                TextCrawl("FIRST STRIKE!");
+                Thread.Sleep(1000);
+
+                Console.Clear();
+
+                TextCrawl("YOUR TURN.");
+                Console.WriteLine("{0}'S HEALTH: {1}\nYOUR HEALTH: {2}", EnemyName, EnemyHealth, PlayerHealth);
+                SetCol(ConsoleColor.DarkYellow);
+                TextCrawl("\n~~>>> ", 50, false);
+                SetCol(ConsoleColor.Red);
+
+                string action = Console.ReadLine();
+
+                if (action.ToLower() == "attack")
+                {
+                    Console.Clear();
+                    TextCrawl(PlayerName.ToUpper() + " ATTACKS!");
+                    Thread.Sleep(3000);
+
+                    Console.Clear();
+                    Console.WriteLine("12 DAMAGE");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+
+                    Console.WriteLine("12 DAMAGE + FIRST STRIKE");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+
+                    Console.WriteLine("12 DAMAGE + FIRST STRIKE + CRITICAL HIT");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+
+                    Console.WriteLine("12 DAMAGE + 5 + CRITICAL HIT");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+
+                    Console.WriteLine("12 DAMAGE + 5 + 12");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+
+                    Console.WriteLine("17 DAMAGE + 12");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+
+                    Console.WriteLine("29 DAMAGE");
+                    Thread.Sleep(3000);
+
+                    SetCol(ConsoleColor.Red, "back");
+                    Console.Clear();
+                    Thread.Sleep(100);
+                    SetCol(ConsoleColor.Black, "back");
+                    Console.Clear();
+
+                    TextCrawl("Security guy Steve was hit for 29 damage!");
+                    EnemyHealth -= 29;
+                    Thread.Sleep(2000);
+                }
+
+                else if (action == "use")
+                {
+                    Console.Clear();
+                    TextCrawl("SECURITY GUY STEVE USES APPRAHEND! TURN INTERRUPTED!");
+                    Thread.Sleep(2000);
+                }
+
+                TextCrawl("\nSECURITY GUY STEVE: That all you got, kid?");
+                Thread.Sleep(1000);
+
+                SetCol(ConsoleColor.Green);
+                TextCrawl("We are no match for him. Let's get outta here. Use the 'run' command to attempt escape.");
+                Thread.Sleep(3000);
+
+                SetCol(ConsoleColor.Red);
+
+                Console.Clear();
+                TextCrawl("ENEMY TURN");
+                Thread.Sleep(3000);
+                TextCrawl("SECURITY GUY STEVE USES TASER CHARGE!");
+                TextCrawl("Enemy is charging up an attack.");
+                Thread.Sleep(3000);
+
+                Console.Clear();
+                SetCol(ConsoleColor.Green);
+                TextCrawl("Let's escape before that attack charges up.");
+                Thread.Sleep(3000);
+                SetCol(ConsoleColor.Red);
+
+                Console.Clear();
+                TextCrawl("YOUR TURN");
+                Thread.Sleep(1000);
+                Console.Clear();
+
+                Console.WriteLine("{0}'S HEALTH: {1}\nYOUR HEALTH: {2}", EnemyName, EnemyHealth, PlayerHealth);
+                SetCol(ConsoleColor.DarkYellow);
+                TextCrawl("~~>>> ", 50, false);
+                SetCol(ConsoleColor.Red);
+
+                string action2 = Console.ReadLine();
+
+                if (action == "run")
+                {
+                    Console.Clear();
+                    TextCrawl("ESCAPE FAILED!");
+                    Thread.Sleep(2000);
+                }
+
+                Console.Clear();
+
+                TextCrawl("ENEMY TURN");
+                Thread.Sleep(3000);
+                TextCrawl("SECURITY GUY STEVE: You've yeed your last haw, kid.");
+                Thread.Sleep(2000);
+                TextCrawl("SECURITY GUY STEVE UNLEASHED HIS CHARGED ATTACK!");
+                Thread.Sleep(2000);
+
+                SetCol(ConsoleColor.Blue, "back");
+                Console.Clear();
+                Thread.Sleep(100);
+                SetCol(ConsoleColor.Cyan, "back");
+                Console.Clear();
+                Thread.Sleep(1000);
+
+                SetCol(ConsoleColor.Blue, "back");
+                Console.Clear();
+                Thread.Sleep(100);
+                SetCol(ConsoleColor.Cyan, "back");
+                Console.Clear();
+                Thread.Sleep(1000);
+
+                SetCol(ConsoleColor.Red, "back");
+                Console.Clear();
+                Thread.Sleep(100);
+                SetCol(ConsoleColor.Black, "back");
+                Console.Clear();
+
+                TextCrawl("You were hit for 1337 damage!");
+                Thread.Sleep(1000);
+                TextCrawl("YOU ARE ON LAST STAND!");
+                Thread.Sleep(1000);
+
+                SetCol(ConsoleColor.Green);
+                TextCrawl("You are on last stand -- you get one turn before dying, and are limited to items and non-lethal abilities.");
+                Thread.Sleep(1000);
+                TextCrawl("Use second wind to escape to a random location!");
+                Thread.Sleep(3000);
+                Console.Clear();
+                SetCol(ConsoleColor.Red);
+
+                while (true)
+                {
+                    Console.Clear();
+                    TextCrawl("LAST STAND ~~>>> ", 50, false);
+
+                    string lsAction = Console.ReadLine();
+
+                    if (lsAction != "use")
+                    {
+                        SetCol(ConsoleColor.Green);
+                        TextCrawl("Use second wind!");
+                        SetCol(ConsoleColor.Red);
+                        Thread.Sleep(3000);
+                    }
+
+                    else
+                    {
+                        Console.WriteLine("1 - Second Wind\n2 - Heckin soup");
+                        TextCrawl("\n~~>>> ", 25, false);
+
+                        string item = Console.ReadLine();
+
+                        if (item != "1")
+                        {
+                            SetCol(ConsoleColor.Green);
+                            TextCrawl("Use second wind!");
+                            SetCol(ConsoleColor.Red);
+                            Thread.Sleep(3000);
+                        }
+
+                        else
+                        {
+                            Console.Clear();
+                            TextCrawl(PlayerName.ToUpper() + " USES SECOND WIND!");
+                            Thread.Sleep(1000);
+                            TextCrawl("ESCAPED!");
+                            Thread.Sleep(3000);
+                            break;
+                        }
+                    }
+                }
+
+                return;
             }
 
 
@@ -350,6 +734,14 @@ namespace RPG
             Thread.Sleep(1000);
             Console.WriteLine();
         }
+
+
+
+        public static int UseItem(string item)
+        {
+            return 69;
+        }
+
 
         public static void AwaitKey()
         {

@@ -4,12 +4,14 @@ using System.Media;
 using System.Linq;
 using System.Diagnostics;
 using WMPLib;
+using System.Collections.Generic;
 
 namespace RPG
 {
     class Program
     {
-        
+        public static Random rnd = new Random();
+
         static void Main(string[] cmdLineArgs)
         {
             Console.CursorVisible = false;
@@ -29,11 +31,11 @@ namespace RPG
 
             Console.Clear();
             TextCrawl("What is your name? ~~>>> ", 50, false);
-            string Name = Console.ReadLine();
+            Globals.Name = Console.ReadLine();
             TextCrawl("Noice.");
             Thread.Sleep(2000);
 
-            Prologue(Name);
+            Prologue(Globals.Name);
         }
 
 
@@ -118,7 +120,7 @@ namespace RPG
         public static void Prologue(string Name)
         {
             string Brief = "\n\n--------------------\n---FOOD ISLE---\n\nThere is a can of soup in front of you. ('can')\nIt is guarded by an employee.\n\nAll directions are blocked as your mum is watching over you.\n\nOBJECTIVE: Get the can of soup\n\nITEMS: None\n--------------------";
-            string Objective = "Pick up the can using the command 'get soup'";
+            Globals.Objective = "Pick up the can using the command 'get soup'";
             string[] items = { };
 
 
@@ -224,7 +226,7 @@ namespace RPG
             TextCrawl("MUM: " + Name + ", Take the employee. I have Steve.");
             AwaitKey();
 
-            Encounter("Employee", Name, 30, 100, true, true);
+            Encounter("Employee", 30, true, true);
 
             Sounds.Play("Detected.flac", 60);
             TextCrawl("MUM: " + Name.ToUpper() + "! HELP!");
@@ -232,13 +234,113 @@ namespace RPG
             TextCrawl("You rush to help your mum against Security Guy Steve.");
             AwaitKey();
 
-            Encounter("Security guy Steve", Name, 69420, 100, true, false, "Steve 1");
+            Encounter("Security guy Steve", 69420, true, false, "Steve 1");
 
-            TextCrawl("despacito");
+            TextCrawl("The tutorial is over. You're on your own now.");
+            Thread.Sleep(1000);
+            TextCrawl("Press any key to start...");
+            AwaitKey();
+
+            Globals.Location = Globals.LocationIndex[rnd.Next(Globals.LocationIndex.Length)];
+
+            TextCrawl("You find yourself in the " + Globals.Location + "... Your mum is nowhere to be found.");
+
+            switch (Globals.Location)
+            {
+                case "Counter":
+
+                    Counter();
+
+                    break;
+
+                case "Car Park":
+
+                    CarPark();
+
+                    break;
+
+                case "Food Isle":
+
+                    FoodIsle();
+
+                    break;
+
+                case "D.I.Y Isle":
+
+                    DIYIsle();
+
+                    break;
+
+                case "Clothes Isle":
+
+                    ClothesIsle();
+
+                    break;
+
+                case "Employees Only Area":
+
+                    EmployeesOnlyArea();
+
+                    break;
+            }
         }
 
 
-        public static void Encounter(string EnemyName, string PlayerName, int EnemyHealth, int PlayerHealth, bool FirstStrike, bool Tutorial, string Boss = "None")  // Encounter system
+        
+        public static void Counter()
+        {
+            TextCrawl("COUNTER");
+        }
+
+
+
+
+
+        public static void CarPark()
+        {
+            TextCrawl("CARPARK");
+        }
+
+
+
+
+
+        public static void FoodIsle()
+        {
+            TextCrawl("FOODISLE");
+        }
+
+
+
+
+
+        public static void ClothesIsle()
+        {
+            TextCrawl("CLOTHESISLE");
+        }
+
+
+
+
+
+        public static void DIYIsle()
+        {
+            TextCrawl("DIYISLE");
+        }
+
+
+
+
+
+        public static void EmployeesOnlyArea()
+        {
+            TextCrawl("EMPLOYEESONLYAREA DESPACITO");
+        }
+
+
+
+
+        public static void Encounter(string EnemyName, int EnemyHealth, bool FirstStrike, bool Tutorial, string Boss = "None")  // Encounter system
         {
             Sounds.PlayLooping("Encounter.wav");
             Sounds.SndPlayer.controls.currentPosition = 0.5;
@@ -290,6 +392,7 @@ namespace RPG
                 Thread.Sleep(3000);
 
                 SetCol(ConsoleColor.Red);
+                Console.Clear();
                 TextCrawl("YOUR TURN");
                 Thread.Sleep(1000);
 
@@ -301,7 +404,7 @@ namespace RPG
                     TextCrawl("Attack by typing 'attack'.");
 
                     SetCol(ConsoleColor.Red);
-                    Console.WriteLine("\n{0}'s HEALTH: {1}\nYOUR HEALTH: {2}\n\n", EnemyName, EnemyHealth, PlayerHealth);
+                    Console.WriteLine("\n{0}'s HEALTH: {1}\nYOUR HEALTH: {2}\n\n", EnemyName, EnemyHealth, Globals.PlayerHealth);
                     SetCol(ConsoleColor.DarkYellow);
                     TextCrawl("~~>>> ", 50, false);
                     SetCol(ConsoleColor.Red);
@@ -318,7 +421,7 @@ namespace RPG
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine("{0} ATTACKS!", PlayerName.ToUpper());
+                        Console.WriteLine("{0} ATTACKS!", Globals.Name.ToUpper());
                         Thread.Sleep(2000);
 
                         Console.Clear();
@@ -362,6 +465,7 @@ namespace RPG
                 Thread.Sleep(3000);
 
                 SetCol(ConsoleColor.Red);
+                Console.Clear();
                 TextCrawl("YOUR TURN");
                 Thread.Sleep(1000);
 
@@ -369,7 +473,7 @@ namespace RPG
                 {
                     Console.Clear();
                     SetCol(ConsoleColor.Red);
-                    Console.WriteLine("\n{0}'s HEALTH: {1}\nYOUR HEALTH: {2}\n\n", EnemyName, EnemyHealth, PlayerHealth);
+                    Console.WriteLine("\n{0}'s HEALTH: {1}\nYOUR HEALTH: {2}\n\n", EnemyName, EnemyHealth, Globals.PlayerHealth);
                     SetCol(ConsoleColor.DarkYellow);
                     TextCrawl("~~>>> ", 50, false);
                     SetCol(ConsoleColor.Red);
@@ -407,7 +511,7 @@ namespace RPG
 
                         else
                         {
-                            TextCrawl(PlayerName.ToUpper() + " USES THE VIGOUR OF LUCK! +10 CRIT CHANCE!");
+                            TextCrawl(Globals.Name.ToUpper() + " USES THE VIGOUR OF LUCK! +10 CRIT CHANCE!");
                             Thread.Sleep(3000);
                             break;
                         }
@@ -415,6 +519,8 @@ namespace RPG
                 }
 
                 Console.Clear();
+                TextCrawl("ENEMY TURN");
+                Thread.Sleep(2000);
                 Console.WriteLine("{0} ATTACKS!", EnemyName.ToUpper());
                 Thread.Sleep(2000);
 
@@ -435,7 +541,7 @@ namespace RPG
                 Console.Clear();
 
                 TextCrawl("You were hit for 10 damage!");
-                PlayerHealth -= 10;
+                Globals.PlayerHealth -= 10;
                 Thread.Sleep(2000);
 
                 Console.Clear();
@@ -451,7 +557,7 @@ namespace RPG
                 while (true)
                 {
                     Console.Clear();
-                    Console.WriteLine("{0}'S HEALTH: {1}\nYOUR HEALTH: {2}\n\n", EnemyName, EnemyHealth, PlayerHealth);
+                    Console.WriteLine("{0}'S HEALTH: {1}\nYOUR HEALTH: {2}\n\n", EnemyName, EnemyHealth, Globals.PlayerHealth);
                     SetCol(ConsoleColor.DarkYellow);
                     TextCrawl("~~>>> ", 50, false);
                     SetCol(ConsoleColor.Red);
@@ -505,6 +611,8 @@ namespace RPG
                     }
                 }
 
+                Thread TitleTextCrawlThread2 = new Thread(() => TitleTextCrawl("Super epic RPG (tm)", 150));
+                TitleTextCrawlThread2.Start();
                 Sounds.FadeOut(40, 50);
                 return;
             }
@@ -526,7 +634,7 @@ namespace RPG
                 Console.Clear();
 
                 TextCrawl("YOUR TURN.");
-                Console.WriteLine("{0}'S HEALTH: {1}\nYOUR HEALTH: {2}", EnemyName, EnemyHealth, PlayerHealth);
+                Console.WriteLine("{0}'S HEALTH: {1}\nYOUR HEALTH: {2}", EnemyName, EnemyHealth, Globals.PlayerHealth);
                 SetCol(ConsoleColor.DarkYellow);
                 TextCrawl("\n~~>>> ", 50, false);
                 SetCol(ConsoleColor.Red);
@@ -536,7 +644,7 @@ namespace RPG
                 if (action.ToLower() == "attack")
                 {
                     Console.Clear();
-                    TextCrawl(PlayerName.ToUpper() + " ATTACKS!");
+                    TextCrawl(Globals.Name.ToUpper() + " ATTACKS!");
                     Thread.Sleep(3000);
 
                     Console.Clear();
@@ -612,7 +720,7 @@ namespace RPG
                 Thread.Sleep(1000);
                 Console.Clear();
 
-                Console.WriteLine("{0}'S HEALTH: {1}\nYOUR HEALTH: {2}", EnemyName, EnemyHealth, PlayerHealth);
+                Console.WriteLine("{0}'S HEALTH: {1}\nYOUR HEALTH: {2}", EnemyName, EnemyHealth, Globals.PlayerHealth);
                 SetCol(ConsoleColor.DarkYellow);
                 TextCrawl("~~>>> ", 50, false);
                 SetCol(ConsoleColor.Red);
@@ -701,7 +809,7 @@ namespace RPG
                         else
                         {
                             Console.Clear();
-                            TextCrawl(PlayerName.ToUpper() + " USES SECOND WIND!");
+                            TextCrawl(Globals.Name.ToUpper() + " USES SECOND WIND!");
                             Thread.Sleep(1000);
                             TextCrawl("ESCAPED!");
                             Thread.Sleep(3000);
@@ -710,6 +818,9 @@ namespace RPG
                     }
                 }
 
+                Thread TitleTextCrawlThread2 = new Thread(() => TitleTextCrawl("Super epic RPG (tm)", 150));
+                TitleTextCrawlThread2.Start();
+                Sounds.FadeOut(40, 50);
                 return;
             }
 
@@ -821,5 +932,16 @@ namespace RPG
                 Thread.Sleep(speed);
             }
         }
+    }
+
+
+    public static class Globals
+    {
+        public static string[] LocationIndex = { "Car Park", "Counter", "Food Isle", "Clothes Isle", "D.I.Y Isle", "Employees Only Area" };
+        public static List<string> Items = new List<string>();
+        public static string Objective = "";
+        public static string Location = "";
+        public static string Name = "";
+        public static int PlayerHealth = 100;
     }
 }

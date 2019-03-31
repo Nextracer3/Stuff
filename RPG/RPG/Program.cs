@@ -14,6 +14,9 @@ namespace RPG
 
         static void Main(string[] cmdLineArgs)
         {
+            Globals.Items.Add("Second Wind");
+            Globals.Items.Add("Vigour of Luck");
+
             Console.CursorVisible = false;
 
 
@@ -33,6 +36,11 @@ namespace RPG
             TextCrawl("What is your name? ~~>>> ", 50, false);
             Globals.Name = Console.ReadLine();
             TextCrawl("Noice.");
+            TextCrawl("Skip tutorial? y/n ~~>>> ", 50, false);
+            string skiptut = Console.ReadLine();
+
+            if (skiptut.ToLower() == "y") { Globals.SkipTut = true; }
+
             Thread.Sleep(2000);
 
             Prologue(Globals.Name);
@@ -119,7 +127,9 @@ namespace RPG
         
         public static void Prologue(string Name)
         {
-            string Brief = "\n\n--------------------\n---FOOD ISLE---\n\nThere is a can of soup in front of you. ('can')\nIt is guarded by an employee.\n\nAll directions are blocked as your mum is watching over you.\n\nOBJECTIVE: Get the can of soup\n\nITEMS: None\n--------------------";
+            if (Globals.SkipTut) { goto skip; }
+
+            string Brief = "\n\n--------------------\n---FOOD ISLE---\n\nThere is a can of soup in front of you. ('can')\nIt is guarded by an employee.\n\nAll directions are blocked as your mum is watching over you.\n\nOBJECTIVE: Get the can of soup\n\nITEMS: Second Wind, Vigour of Luck\n--------------------";
             Globals.Objective = "Pick up the can using the command 'get soup'";
             string[] items = { };
 
@@ -182,6 +192,7 @@ namespace RPG
 
             TextCrawl("^^^ That is a brief. It is info about an area that is displayed when you enter it.");
             TextCrawl("You can see it at any time by typing 'brief.'");
+            TextCrawl("The brief will display what areas are around you, and you can visit them with n for north, s for south and so on.");
 
             while (true)
             {
@@ -230,20 +241,29 @@ namespace RPG
 
             Sounds.Play("Detected.flac", 60);
             TextCrawl("MUM: " + Name.ToUpper() + "! HELP!");
-            AwaitKey();
+            Thread.Sleep(1000);
+            Sounds.Stop();
             TextCrawl("You rush to help your mum against Security Guy Steve.");
-            AwaitKey();
+            Thread.Sleep(1000);
 
             Encounter("Security guy Steve", 69420, true, false, "Steve 1");
 
+            Console.Clear();
+            SetCol(ConsoleColor.Cyan);
             TextCrawl("The tutorial is over. You're on your own now.");
             Thread.Sleep(1000);
             TextCrawl("Press any key to start...");
             AwaitKey();
 
+            skip:
+            Sounds.Play("ShopAmbience.wav");
+            Console.Clear();
             Globals.Location = Globals.LocationIndex[rnd.Next(Globals.LocationIndex.Length)];
 
-            TextCrawl("You find yourself in the " + Globals.Location + "... Your mum is nowhere to be found.");
+            Globals.Location = "Car Park";
+
+            TextCrawl("You find yourself at the " + Globals.Location + "... Your mum is nowhere to be found.");
+            Thread.Sleep(1000);
 
             switch (Globals.Location)
             {
@@ -289,7 +309,69 @@ namespace RPG
         
         public static void Counter()
         {
-            TextCrawl("COUNTER");
+            string brief = "";
+            if (!Globals.SusanDead)
+            {
+                brief = "--------------------\n---COUNTER---\nTo the North is the car park, however the cashier will not let you out without paying.\n\nSouth is the clothes isle.\n\nTo the East is the food isle.\n\nTo the West is the D.I.Y isle.\n\nOBJECTIVE: Get past the cashier\n\nITEMS: ";
+                DisplayNewObjective("GET PAST THE CASHIER\n");
+            }
+
+            else
+            {
+                brief = "--------------------\n---COUNTER---\nTo the North is the car park.\n\nSouth is the clothes isle.\n\nTo the East is the food isle.\n\nTo the West is the D.I.Y isle.\n\nOBJECTIVE: None\n\nITEMS: ";
+            }
+
+            foreach (string item in Globals.Items)
+            {
+                brief += item + ", ";
+            }
+
+            Console.WriteLine(brief);
+
+            while (true)
+            {
+                SetCol(ConsoleColor.Blue);
+                TextCrawl("\n~~>>> ", 50, false);
+                SetCol(ConsoleColor.Cyan);
+
+                string action = Console.ReadLine();
+
+                if (action.ToLower() == "brief") { Console.WriteLine(brief); }
+
+                else if (action.ToLower() == "attack")
+                {
+                    Encounter("Cashier Susan", 100, true, false, "Susan");
+                }
+
+                else if (action.ToLower() == "n" && !Globals.SusanDead)
+                {
+                    TextCrawl("\n\nSUSAN: OI!");
+                    AwaitKey();
+                    TextCrawl("SUSAN: YOU GOTTA PAY!");
+                    AwaitKey();
+                    TextCrawl("YOU: I just need to find my mum.");
+                    AwaitKey();
+                    TextCrawl("SUSAN: NO!");
+                    AwaitKey();
+
+                    Encounter("Cashier Susan", 100, false, false, "Susan");
+                }
+
+                else if (action.ToLower() == "n" && Globals.SusanDead)
+                {
+                    CarPark();
+                }
+
+                else if (action.ToLower() == "e")
+                {
+                    FoodIsle();
+                }
+
+                else if (action.ToLower() == "w")
+                {
+                    DIYIsle();
+                }
+            }
         }
 
 
@@ -298,7 +380,68 @@ namespace RPG
 
         public static void CarPark()
         {
-            TextCrawl("CARPARK");
+            Console.Clear();
+            if (!Globals.AngryCivsDead) { DisplayNewObjective("GET THE KEYS FROM THE CIVILIANS\n"); }
+
+            string brief = "";
+
+            if (!Globals.AngryCivsDead)
+            {
+                brief = "--------------------\n---CAR PARK---\nThere are some angry civilians keying a car. The key says 'EMPLOYEE AREA'. ('key')\n\nTo the South is the counter.\n\nOBJECTIVE: " + Globals.Objective + "\n\nITEMS: ";
+            }
+
+            else
+            {
+                brief = "--------------------\n---CAR PARK---\nTo the South is the Counter.\n\nOBJECTIVES: " + Globals.Objective + "\n\nITEMS: ";
+            }
+
+            foreach (string item in Globals.Items)
+            {
+                brief += item + ", ";
+            }
+
+            SetCol(ConsoleColor.Green);
+            Console.WriteLine(brief);
+
+            while (true)
+            {
+                SetCol(ConsoleColor.Blue);
+                TextCrawl("\n~~>>> ", 50, false);
+                SetCol(ConsoleColor.Cyan);
+
+                string action = Console.ReadLine();
+
+                if (action.ToLower() == "brief")
+                {
+                    Console.WriteLine(brief + "\n\n");
+                }
+
+                else if (action.ToLower() == "attack" && !Globals.AngryCivsDead)
+                {
+                    Encounter("Angry Civilians", 50, true, false, "AngryCivs");
+                }
+
+                else if (action.ToLower() == "get key")
+                {
+                    TextCrawl("\n\nCIVILIAN 1: Excuse me?");
+                    AwaitKey();
+                    TextCrawl("YOU: I... Can I borrow those keys for a second?");
+                    AwaitKey();
+                    TextCrawl("CIVILIAN 2: How about no?");
+                    AwaitKey();
+                    TextCrawl("YOU: I need them.");
+                    AwaitKey();
+                    TextCrawl("CIVILIAN 1: We'll fight you for it!");
+                    AwaitKey();
+
+                    Encounter("Angry Civilians", 50, false, false, "AngryCivs");
+                }
+
+                else if (action.ToLower() == "s")
+                {
+                    Counter();
+                }
+            }
         }
 
 
@@ -360,7 +503,6 @@ namespace RPG
             }
 
             int DmgMod = 0;
-            int HpMod = 0;
             int PlayerLastStandChance = 50;
             int EnemyLastStandChance = 30;
             int PlayerCritChance = 10;
@@ -727,7 +869,7 @@ namespace RPG
 
                 string action2 = Console.ReadLine();
 
-                if (action == "run")
+                if (action2.ToLower() == "run")
                 {
                     Console.Clear();
                     TextCrawl("ESCAPE FAILED!");
@@ -826,6 +968,317 @@ namespace RPG
 
 
 
+            else if (Boss == "Susan")   // Cashier Susan boss fight
+            {
+                bool stronk = false;
+                SetCol(ConsoleColor.Red);
+                Sounds.FadeOut(40, 10);
+                Sounds.PlayLooping("Susan.wav");
+
+                TextCrawl("CASHIER SUSAN BLOCKS THE WAY!");
+                Thread.Sleep(2000);
+
+                PlayerLastStandChance = 50;
+                EnemyLastStandChance = 30;
+                PlayerCritChance = 10;
+                EnemyCritChance = 10;
+
+                if (FirstStrike)
+                {
+                    TextCrawl("FIRST STRIKE!");
+                    Thread.Sleep(1000);
+                    DmgMod += 5;
+                    turn = "player";
+                }
+
+                while (Globals.PlayerHealth > 0 && EnemyHealth > 0)
+                {
+                    if (turn == "player")
+                    {
+                        stronk = false; 
+                        Console.Clear();
+                        TextCrawl("YOUR TURN");
+                        Thread.Sleep(1000);
+                        Console.Clear();
+                        Console.WriteLine("SUSAN'S HEALTH: {0}\nYOUR HEALTH: {1}", EnemyHealth, Globals.PlayerHealth);
+
+                        SetCol(ConsoleColor.DarkYellow);
+                        TextCrawl("\n~~>>> ", 50, false);
+                        SetCol(ConsoleColor.Red);
+
+                        string action = Console.ReadLine();
+
+                        if (action.ToLower() == "attack")
+                        {
+                            Console.Clear();
+                            TextCrawl(Globals.Name.ToUpper() + " ATTACKS!");
+                            Thread.Sleep(1000);
+
+                            Console.Clear();
+
+                            int dmg = rnd.Next(1, 20);
+
+                            Console.Write("{0} DAMAGE", dmg.ToString());
+                            Thread.Sleep(1000);
+
+                            if (FirstStrike)
+                            {
+                                Console.Write(" + FIRST STRIKE");
+                                Thread.Sleep(1000);
+                                Console.Clear();
+
+                                Console.Write("{0} DAMAGE + 5", dmg);
+                                Thread.Sleep(1000);
+                            }
+
+                            if (rnd.Next(1, 100) <= PlayerCritChance)
+                            {
+                                Console.Write(" + CRITICAL HIT");
+                                DmgMod += (dmg * 2);
+                                Thread.Sleep(1000);
+                                Console.Clear();
+
+                                Console.Write("{0} DAMAGE", dmg);
+                                if (FirstStrike) { Console.Write(" + 5"); Thread.Sleep(1000); }
+                                Console.Write(" + {0}", dmg * 2);
+                                Thread.Sleep(1000);
+                            }
+
+                            dmg += DmgMod;
+                            Console.Clear();
+                            Console.WriteLine("{0}", dmg);
+                            Thread.Sleep(1000);
+
+                            SetCol(ConsoleColor.Red, "back");
+                            Console.Clear();
+                            Thread.Sleep(100);
+                            SetCol(ConsoleColor.Black, "back");
+                            Console.Clear();
+
+                            TextCrawl("Susan was hit for " + dmg + " damage!");
+                            EnemyHealth -= dmg;
+                            Thread.Sleep(1000);
+
+                            dmg = 0;
+                            DmgMod = 0;
+                            turn = "enemy";
+                        }
+
+                        else if (action.ToLower() == "use")
+                        {
+                            Console.Clear();
+                            TextCrawl("Items are not made yet.");
+                            Thread.Sleep(1000);
+
+                            turn = "enemy";
+                        }
+
+                        else if (action.ToLower() == "run")
+                        {
+                            if (rnd.Next(1, 100) <= 50)
+                            {
+                                Console.Clear();
+                                TextCrawl("ESCAPED SUCCESSFULLY!");
+                                Thread.Sleep(1000);
+                                return;
+                            }
+
+                            else
+                            {
+                                Console.Clear();
+                                TextCrawl("ESCAPE FAILED!");
+                                turn = "enemy";
+                            }
+                        }
+
+
+                        else
+                        {
+                            Console.Clear();
+                            TextCrawl("Invalid.");
+                            Thread.Sleep(1000);
+                        }
+
+                    }
+
+
+                    else
+                    {
+                        FirstStrike = false;
+                        DmgMod = 0;
+
+                        Console.Clear();
+                        TextCrawl("ENEMY TURN");
+                        Thread.Sleep(1000);
+                        Console.Clear();
+
+                        int EnemyAction = rnd.Next(1, 4);
+
+                        if (EnemyAction == 1)
+                        {
+                            TextCrawl("SUSAN ATTACKS!");
+                            Thread.Sleep(1000);
+
+                            int dmg = rnd.Next(1, 20);
+
+                            Console.Write("{0} DAMAGE", dmg);
+                            Thread.Sleep(1000);
+
+                            if (rnd.Next(1, 100) <= EnemyCritChance)
+                            {
+                                Console.Write(" + CRITICAL HIT");
+                                DmgMod += (dmg * 2);
+                                Thread.Sleep(1000);
+                                Console.Clear();
+                                Console.Write("{0} DAMAGE + {1}", dmg, DmgMod);
+                                Thread.Sleep(1000);
+
+                                dmg += DmgMod;
+
+                                Console.Clear();
+                                Console.Write("{0} DAMAGE", dmg);
+                            }
+
+                            if (stronk)
+                            {
+                                TextCrawl("\nSusan has used the strength of vigour. +10 damage!");
+                                Thread.Sleep(1000);
+                                dmg += 10;
+                            }
+
+                            Thread.Sleep(3000);
+
+                            SetCol(ConsoleColor.Red, "back");
+                            Console.Clear();
+                            Thread.Sleep(100);
+                            SetCol(ConsoleColor.Black, "back");
+                            Console.Clear();
+
+                            TextCrawl("You were hit for " + dmg + " damage!");
+                            Globals.PlayerHealth -= dmg;
+                            Thread.Sleep(2000);
+
+                            dmg = 0;
+                            DmgMod = 0;
+
+                            turn = "player";
+                        }
+
+                        else if (EnemyAction == 2)
+                        {
+                            TextCrawl("SUSAN USES VIGOUR OF STRENGTH!");
+                            TextCrawl("+10 damage for next turn!");
+                            Thread.Sleep(1000);
+                            stronk = true;
+                            turn = "player";
+                        }
+
+                        else
+                        {
+                            TextCrawl("SUSAN USES WEAK SMILE!");
+                            Thread.Sleep(1000);
+                            TextCrawl("YOUR DEFENSE HAS FALLEN!");
+                            Thread.Sleep(2000);
+                            turn = "player";
+                        }
+                    }
+                }
+
+
+                if (Globals.PlayerHealth < 1)
+                {
+                    if (rnd.Next(1, 100) <= PlayerLastStandChance)
+                    {
+                        Console.Clear();
+                        TextCrawl("YOU ARE ON LAST STAND!");
+                        Thread.Sleep(1000);
+                        Console.Clear();
+                        TextCrawl("LAST STAND ~~>>> ", 50, false);
+
+                        string lsAction = Console.ReadLine();
+
+                        if (lsAction.ToLower() == "use")
+                        {
+                            TextCrawl("Items are not made yet.");
+                            Thread.Sleep(1000);
+                            GameOver();
+                        }
+
+                        GameOver();
+                    }
+
+                    else
+                    {
+                        Console.Clear();
+                        GameOver();
+                    }
+                }
+
+                else if (EnemyHealth < 1)
+                {
+                    Console.Clear();
+                    SetCol(ConsoleColor.Green);
+                    TextCrawl("YOU WON! YOU GOT 100 EXP AND 300 GOLD.");
+                    Globals.SusanDead = true;
+                    Sounds.FadeOut(40, 50);
+                    Sounds.Play("ShopAmbience.wav");
+                    return;
+                }
+            }
+
+
+
+
+
+            else if (Boss == "AngryCivs")   // Angry civs fight
+            {
+                SetCol(ConsoleColor.Red);
+                Sounds.FadeOut(40, 10);
+                Sounds.Play("AngryCivs.flac");
+
+                TextCrawl("ANGRY CIVILIANS DRAW NEAR!");
+                Thread.Sleep(1000);
+
+                if (FirstStrike)
+                {
+                    TextCrawl("FIRST STRIKE!");
+                    turn = "player";
+                    Thread.Sleep(1000);
+                    DmgMod += 5;
+                }
+
+
+                if (turn == "player")
+                {
+                    Console.Clear();
+                    TextCrawl("YOUR TURN");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+
+                    Console.WriteLine("ANGRY CIVILIANS' HEALTH: {0}\nYOUR HEALTH: {1}", EnemyHealth, Globals.PlayerHealth);
+                    SetCol(ConsoleColor.DarkYellow);
+                    TextCrawl("\n~~>>> ", 50, false);
+                    SetCol(ConsoleColor.Red);
+
+                    string action = Console.ReadLine();
+
+                    if (action.ToLower() == "attack")
+                    {
+
+                    }
+                }
+
+                else
+                {
+                    TextCrawl("despacito");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+                }
+
+            }
+
+
+
 
             else  // Normal encounter
             {
@@ -836,6 +1289,7 @@ namespace RPG
 
         public static void DisplayNewObjective(string obj)
         {
+            Globals.Objective = obj;
             SetCol(ConsoleColor.Magenta);
             TextCrawl("\n---NEW OBJECTIVE---");
             Thread.Sleep(1000);
@@ -844,6 +1298,21 @@ namespace RPG
             SetCol(ConsoleColor.Cyan);
             Thread.Sleep(1000);
             Console.WriteLine();
+        }
+
+
+
+        public static void GameOver()
+        {
+            Console.Clear();
+            SetCol(ConsoleColor.Red);
+            TextCrawl("G A M E  O V E R");
+            SetCol(ConsoleColor.Blue);
+            Thread.Sleep(1000);
+            TextCrawl("You are dead.");
+            Thread.Sleep(5000);
+
+            Menu();
         }
 
 
@@ -943,5 +1412,21 @@ namespace RPG
         public static string Location = "";
         public static string Name = "";
         public static int PlayerHealth = 100;
+        public static bool SusanDead = false;
+        public static bool SkipTut = false;
+        public static bool AngryCivsDead = false;
     }
 }
+
+
+
+
+
+
+
+// TODO //
+
+// Polish up Susan fight
+// Finish Angry civs fight
+// Finish items
+// Finish the other areas

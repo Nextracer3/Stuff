@@ -81,7 +81,25 @@ namespace RPG
             SetCol(ConsoleColor.Black, "back");
 
             Sounds.Play("ShopAmbience.wav");
+            Sleep(5000);
+
+
+
+            TextCrawl("WADDLE, " + Globals.PlayerName);
             Sleep(3000);
+            TextCrawl("Sainsbury's, some generic town name");
+            Sleep(3000);
+            TextCrawl("16:31 -- SATURDAY");
+
+            Sleep(3000);
+
+            Console.Clear();
+
+            Console.WriteLine("WADDLE, " + Globals.PlayerName + "\nSainsbury's, some generic town name\n16:32 -- SATURDAY");
+
+            Sleep(2000);
+
+            ReverseTextCrawl("WADDLE " + Globals.PlayerName + "\nSainsbury's, some generic town name\n16:32");
 
             TextCrawl(Globals.PlayerName + "?");
             Sleep(1000);
@@ -245,6 +263,42 @@ namespace RPG
 
             // Leave a new line at the end if endl is true
             if (endl) Console.WriteLine(); 
+        }
+
+
+
+
+
+        public static void ReverseTextCrawl(string str, int ms = 50)
+        {
+            List<char> chars = new List<char>(str.ToCharArray());
+
+            for (int i = chars.ToArray().Length - 1; i >= 0; i--)
+            {
+                chars.RemoveAt(i);
+                Console.Clear();
+
+                str = "";
+                foreach (char letter in chars)
+                {
+                    str += letter;
+                }
+
+                Console.Write(str);
+                Sleep(ms);
+            }
+        }
+
+
+
+
+
+        public static void IntroSplashScreen(string str, int ms = 50)
+        {
+            TextCrawl(str);
+            Sleep(5000);
+
+            ReverseTextCrawl(str);
         }
 
 

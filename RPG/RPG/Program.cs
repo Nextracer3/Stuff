@@ -18,8 +18,10 @@ namespace RPG
                 Console.WriteLine("ARGS: {0}\n", cmdLineArgs);
             }
 
+
             Console.CursorVisible = false;
             SetCol(ConsoleColor.Blue);
+
 
             Thread FadeInThread = new Thread(() => Sounds.FadeIn("Despacito.wav"));
             FadeInThread.Start();
@@ -137,7 +139,9 @@ namespace RPG
 
                 if (action.ToLower() == "brief")
                 {
+                    SetCol(ConsoleColor.Green);
                     Console.WriteLine(brief);
+                    SetCol(ConsoleColor.Cyan);
                 }
 
                 else if (action.ToLower() == "attack")
@@ -160,7 +164,69 @@ namespace RPG
             }
 
             Console.Clear();
-            TextCrawl("despacito yeet");
+
+            SetCol(ConsoleColor.Magenta);
+            TextCrawl("Objective completed.");
+            SetCol(ConsoleColor.Cyan);
+
+            TextCrawl("You walk over and pick up the can.");
+            Pause();
+            TextCrawl("???: OI!");
+            Pause();
+            TextCrawl("You turn around to the face of an angry employee.");
+            Pause();
+
+            Sounds.Play("HeckinSoup.wav");
+
+            TextCrawl("EMPLOYEE: That's me heckin' soup!");
+            Pause();
+            TextCrawl("Mum jumps to your defense.");
+            Pause();
+            TextCrawl("MUM: Sorry, we thought that soup was on sale...");
+            Pause();
+            TextCrawl("EMPLOYEE: You took me heckin' soup!");
+            Pause();
+            TextCrawl("YOU: But--");
+            TextCrawl("EMPLOYEE: Security! Get me security in the food isle!");
+            Pause();
+            TextCrawl("EMPLOYEE RADIO: On my way.");
+            Pause();
+            TextCrawl("MUM: " + Globals.PlayerName + ", take the employee. I'll deal with the security.");
+            Pause();
+
+            TutorialEncounter();
+        }
+
+
+
+
+
+        public static void TutorialEncounter()
+        {
+            Console.Clear();
+
+            Thread TitleTextCrawlThread = new Thread(() => TitleTextCrawl("ENCOUNTER!!!"));
+            TitleTextCrawlThread.Start();
+
+            Sounds.Play("Encounter.wav");
+            Sounds.SndPlayer.controls.currentPosition = 0.5;
+
+            for (int i = 0; i < 12; i++)
+            {
+                SetCol(ConsoleColor.Red, "back");
+                Console.Clear();
+                Sleep(100);
+                SetCol(ConsoleColor.Black, "back");
+                Console.Clear();
+                Sleep(100);
+            }
+
+            SetCol(ConsoleColor.Red);
+
+            TextCrawl("A WILD EMPLOYEE APPEARED!");
+            Sleep(1000);
+
+            SetCol(ConsoleColor.Green);
         }
 
 
@@ -407,7 +473,7 @@ namespace RPG
         public static string PlayerName = "";
         public static int PlayerHealth = 100;
 
-        public static List<string> Items = new List<string>();
+        public static List<string> Items = new List<string>(new string[] { "Second Wind", "Vigour of Luck" });
         public static string Objective = "";
 
         public static string Location = "";

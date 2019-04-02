@@ -5,6 +5,8 @@ using System.Linq;
 using WMPLib;
 using System.Diagnostics;
 
+// System.Runtime.InteropServices.COMException
+
 namespace RPG
 {
     class Program
@@ -101,6 +103,8 @@ namespace RPG
 
             ReverseTextCrawl("WADDLE " + Globals.PlayerName + "\nSainsbury's, some generic town name\n16:32");
 
+            Sleep(3000);
+
             TextCrawl(Globals.PlayerName + "?");
             Sleep(1000);
             Console.WriteLine("(press any key to continue dialogue)");
@@ -119,7 +123,7 @@ namespace RPG
 
 
 
-            string brief = "--------------------\n|=---FOOD ISLE---=|\nThere is a can of soup in front of you. ('can') An employee is standing next to it.\n\nAll directions are blocked as your mum is watching over you.\n\nITEMS: ";
+            string brief = "--------------------\n|=---FOOD ISLE---=|\nThere is a can of soup in front of you ('can'). An employee is standing next to it.\n\nAll directions are blocked as your mum is watching over you.\n\nITEMS: ";
 
             // Adding each of the player's items to the brief
             foreach (string item in Globals.Items)
@@ -243,8 +247,100 @@ namespace RPG
 
             TextCrawl("A WILD EMPLOYEE APPEARED!");
             Sleep(1000);
+            TextCrawl("FIRST STRIKE!");
+            Sleep(1000);
 
             SetCol(ConsoleColor.Green);
+            TextCrawl("You have the first strike, as you started the battle by drawing first blood.");
+            Sleep(1000);
+            TextCrawl("This means you get the first turn, along with a 1 turn attack bonus.");
+            Sleep(1000);
+            TextCrawl("Let's take advantage of your first strike and attack the enemy by typing 'attack'!");
+            Sleep(3000);
+            SetCol(ConsoleColor.Red);
+
+            Console.Clear();
+            TextCrawl("YOUR TURN");
+            Sleep(1000);
+            Console.Clear();
+
+
+            while (true)
+            {
+                Console.WriteLine("EMPLOYEE'S HEALTH: 30\nYOUR HEALTH: 100");
+                SetCol(ConsoleColor.DarkYellow);
+                TextCrawl("\n~~>>> ", 50, false);
+                SetCol(ConsoleColor.Red);
+
+                string action = Console.ReadLine();
+
+                if (action != "attack")
+                {
+                    SetCol(ConsoleColor.Green);
+                    TextCrawl("Nope. Attack the enemy by typing 'attack.'");
+                    SetCol(ConsoleColor.Red);
+                    Sleep(2000);
+                    Console.Clear();
+                }
+
+                else
+                {
+                    break;
+                }
+            }
+
+            Console.Clear();
+
+            Console.WriteLine("10 DAMAGE");
+            Sleep(1000);
+            Console.Clear();
+            Console.WriteLine("10 DAMAGE + FIRST STRIKE");
+            Sleep(1000);
+            Console.Clear();
+            Console.WriteLine("10 DAMAGE + 5");
+            Sleep(1000);
+            Console.Clear();
+            Console.WriteLine("15 DAMAGE");
+            Sleep(2000);
+
+            SetCol(ConsoleColor.Red, "back");
+            Sleep(100);
+            SetCol(ConsoleColor.Black, "back");
+
+            TextCrawl("EMPLOYEE WAS HIT FOR 15 DAMAGE!");
+            Sleep(2000);
+
+            Console.Clear();
+
+            TextCrawl("ENEMY TURN");
+            Sleep(1000);
+            Console.Clear();
+
+            TextCrawl("EMPLOYEE USES VIGOUR OF RESILIANCE!");
+            Sleep(1000);
+
+            SetCol(ConsoleColor.Green);
+            TextCrawl("They just used an item to increase their chance of getting last stand.");
+            Sleep(1000);
+            TextCrawl("Let's use an item to increase our critical hit chance.\nBring up the items list with 'use' and select the vigour of luck.");
+            Sleep(2000);
+            SetCol(ConsoleColor.Red);
+
+            Console.Clear();
+            TextCrawl("YOUR TURN");
+            Sleep(1000);
+
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("EMPLOYEE'S HEALTH: 15\nYOUR HEALTH: 100");
+                SetCol(ConsoleColor.DarkYellow);
+                TextCrawl("\n~~>>> ", 50, false);
+                SetCol(ConsoleColor.Red);
+
+                string action2 = Console.ReadLine();
+            }
+
         }
 
 

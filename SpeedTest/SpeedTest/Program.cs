@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Threading;
 using System.Net;
+using System.Linq;
+using System.Diagnostics;
 
 namespace SpeedTest
 {
     class Program
     {
+        public static Random rnd = new Random();
+
         static void Main(string[] cmdLineArgs)
         {
             if (cmdLineArgs.Length > 0) { Console.WriteLine("ARGS: {0}", cmdLineArgs); }
@@ -17,12 +21,15 @@ namespace SpeedTest
             Thread TitleTextCrawlThread = new Thread(() => TitleTextCrawl("Internet Speed Test"));  
             TitleTextCrawlThread.Start();
 
-            TextCrawl("The speed test will test the download and upload speed for your internet - this will use around 40 MB of data.");
-            Thread.Sleep(1000);
+            TextCrawl("The speed test will test the download speed, upload speed and ping/latency for your internet.");
             TextCrawl("Press any key to continue with the test...");
             Console.ReadKey(true);
 
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("DOWNLOAD    ");
 
+            TestDownload();
         }
 
 
@@ -54,6 +61,24 @@ namespace SpeedTest
                 Console.Title = title;    
                 Thread.Sleep(ms);
             }
+        }
+
+
+        public static void TestDownload()
+        {
+            
+        }
+
+
+        public static void TestUpload()
+        {
+            
+        }
+
+
+        public static void TestPing()
+        {
+            
         }
     }
 }
